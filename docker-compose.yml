@@ -1,0 +1,17 @@
+version: '3'
+services:
+  bot:
+    build: ./bot
+    ports:
+      - "8011:8000"
+    command: python /home/bot/app.py
+    environment:
+      CHANNEL_SECRET: ${CHANNEL_SECRET}
+      CHANNEL_TOKEN: ${CHANNEL_TOKEN}
+      VIRTUAL_HOST: woodbot.wild-family.cf
+    volumes:
+      - ./bot:/home/bot
+networks:
+    default:
+        external:
+          name: my_network
