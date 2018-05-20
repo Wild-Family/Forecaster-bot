@@ -11,6 +11,26 @@ services:
       VIRTUAL_HOST: woodbot.wild-family.cf
     volumes:
       - ./bot:/home/bot
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+       - /postgres/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    # networks:
+    #   - wild-family-network
+    restart: unless-stopped
+  pgweb:
+    image: donnex/pgweb
+    command: -s --bind=0.0.0.0 --listen=8080 --url postgresql://test:@postgres/test?sslmode=disable
+    links:
+      - postgres:postgres
+    ports:
+      - '8080:8080'
 networks:
     default:
         external:
