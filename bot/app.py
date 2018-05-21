@@ -15,7 +15,13 @@
 import os
 import sys
 
+# postgres library
+import psycopg2
+
+# Web server
 from flask import Flask, request, abort
+
+# linebot
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -69,4 +75,15 @@ def message_text(event):
 
 
 if __name__ == "__main__":
+    try:
+        conn = psycopg2.connect(
+            dbname='docker',
+            user='postgres',
+            host='postgres',
+            password='password')
+        cur = conn.cursor()
+        res = cur.execute("select * from users;")
+        print(res)
+    except psycopg2.Error as err:
+        print(err)
     app.run(debug=True, host='0.0.0.0', port=8000)
