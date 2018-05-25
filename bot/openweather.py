@@ -5,7 +5,6 @@ import requests
 
 
 def get_current_weather(lat, lon):
-    #set_env('API_KEY')
     API_KEY = os.getenv('API_KEY', None)
     if API_KEY is None:
         print('Specify API_KEY as environment variable.')
@@ -14,6 +13,26 @@ def get_current_weather(lat, lon):
     # 気温の単位は摂氏
     payload = {'lat': lat, 'lon': lon, 'units': 'metric', 'APPID': API_KEY}
     url = 'http://api.openweathermap.org/data/2.5/weather'
+
+    # 現在の天気を取得
+    response = requests.get(url, payload)
+
+    # レスポンスをjsonで取得
+    return response.json()
+
+
+def get_current_forecast(lat, lon):
+    API_KEY = os.getenv('API_KEY', None)
+    if API_KEY is None:
+        print('Specify API_KEY as environment variable.')
+        sys.exit(1)
+
+    # 気温の単位は摂氏
+    payload = {'lat': lat, 'lon': lon, 'units': 'metric', 'APPID': API_KEY}
+    url = 'http://api.openweathermap.org/data/2.5/forecast'
+
+    # 当日09:00から5日間分の予報を取得
+    # 最後は21:00
     response = requests.get(url, payload)
 
     # レスポンスをjsonで取得
@@ -48,7 +67,12 @@ def main():
         "longitude": 139.70372892916203}
     
     weather_json = get_current_weather(weather_dict['latitude'], weather_dict['longitude'])
-    print(weather_json)
+    weather_dump = json.dumps(weather_json, indent=2)
+    print(weather_dump)
+
+    forecast_json = get_current_forecast(weather_dict['latitude'], weather_dict['longitude'])
+    forecast_dump = json.dumps(forecast_json, indent=2)
+    print(forecast_dump)
 
 
 if __name__ == '__main__':

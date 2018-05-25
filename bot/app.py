@@ -78,6 +78,7 @@ def message_text(event):
 
 @handler.add(MessageEvent, message=LocationMessage)
 def message_location(event):
+    print(event.message.title)
     result_json = ow.get_current_weather(event.message.latitude, event.message.longitude)
     print(result_json)
     line_bot_api.reply_message(
