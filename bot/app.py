@@ -14,6 +14,9 @@
 
 import os
 import sys
+import json
+import openweather as ow
+import message_builder as mb
 
 from flask import Flask, request, abort
 from linebot import (
@@ -23,14 +26,19 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage, TextSendMessage, LocationMessage
 )
 
 app = Flask(__name__)
 
-# get channel_secret and channel_access_token from your environment variable
+# デバッグ用
+# .envから環境変数を設定
+#ow.set_env("CHANNEL_SECRET")
+#ow.set_env("CHANNEL_TOKEN")
+
 channel_secret = os.getenv('CHANNEL_SECRET', None)
 channel_access_token = os.getenv('CHANNEL_TOKEN', None)
+
 if channel_secret is None:
     print('Specify CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -67,6 +75,16 @@ def message_text(event):
         TextSendMessage(text=event.message.text)
     )
 
+
+@handler.add(MessageEvent, message=LocationMessage)
+def message_location(event):
+    print(event.message.title)
+    result_json = ow.get_current_weather(event.message.latitude, event.message.longitude)
+    print(result_json)
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=mb.build_test_message(result_json))
+    )
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8000)

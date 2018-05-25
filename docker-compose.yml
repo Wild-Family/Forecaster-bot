@@ -8,6 +8,7 @@ services:
     environment:
       CHANNEL_SECRET: ${CHANNEL_SECRET}
       CHANNEL_TOKEN: ${CHANNEL_TOKEN}
+      API_KEY: ${API_KEY}
       VIRTUAL_HOST: woodbot.wild-family.cf
     volumes:
       - ./bot:/home/bot
