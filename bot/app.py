@@ -16,6 +16,7 @@ import os
 import sys
 import json
 import openweather as ow
+import message_builder as mb
 
 from flask import Flask, request, abort
 from linebot import (
@@ -81,7 +82,7 @@ def message_location(event):
     print(result_json)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=result_json['main']['temp'])
+        TextSendMessage(text=mb.build_test_message(result_json))
     )
 
 if __name__ == "__main__":
