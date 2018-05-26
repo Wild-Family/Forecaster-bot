@@ -31,7 +31,7 @@ def get_current_forecast(lat, lon):
     payload = {'lat': lat, 'lon': lon, 'units': 'metric', 'APPID': API_KEY}
     url = 'http://api.openweathermap.org/data/2.5/forecast'
 
-    # 当日09:00から5日間分の予報を取得
+    # 現在時刻の-9時間前から5日間分の予報を取得
     # 最後は21:00
     response = requests.get(url, payload)
 
