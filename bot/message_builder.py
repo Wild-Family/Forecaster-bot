@@ -23,7 +23,6 @@ def CarouselSendMessage(forecast_day):
     for i, lapse in enumerate(forecast_day.values()):
         # 多すぎたので偶数個だけ表示
         if i % 2 == 0:
-            image_url = f"https://openweathermap.org/img/w/{lapse['weather'][0]['icon']}.png"
             image_url = f"https://rawgit.com/Wild-Family/Forecaster-bot/add-feature-forecast/bot/icons/{lapse['weather'][0]['icon']}.png"
             columns.append(template.CarouselColumn(
                 thumbnail_image_url=image_url,
