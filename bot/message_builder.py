@@ -22,7 +22,7 @@ def CarouselSendMessage(forecast_day):
     for lapse in forecast_day.values():
         columns.append(template.CarouselColumn(
             thumbnail_image_url=None,
-            title=convert_str_to_dt_jp(lapse['dt_txt']).strftime('%Y/%m/%d %H:%M'),
+            title=datetime.datetime.strptime(lapse['dt_txt'], '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d %H:%M'),
             text=lapse['weather'][0]['main'],
             actions=[
                 template.MessageTemplateAction(
