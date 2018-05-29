@@ -73,6 +73,8 @@ def main():
     forecast_json = get_current_forecast(weather_dict['latitude'], weather_dict['longitude'])
     forecast_dump = json.dumps(forecast_json, indent=2)
     print(forecast_dump)
+    fw = open('forest_test.json', 'w')
+    json.dump(forecast_json, fw, indent=2)
 
 
 if __name__ == '__main__':

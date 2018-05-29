@@ -28,6 +28,9 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, LocationMessage
 )
+from linebot.models.template import (
+    TemplateSendMessage, CarouselColumn, CarouselTemplate, PostbackTemplateAction, MessageTemplateAction, URITemplateAction
+)
 
 app = Flask(__name__)
 
@@ -78,13 +81,16 @@ def message_text(event):
 
 @handler.add(MessageEvent, message=LocationMessage)
 def message_location(event):
-    print(event.message.title)
-    result_json = ow.get_current_weather(event.message.latitude, event.message.longitude)
-    print(result_json)
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=mb.build_test_message(result_json))
-    )
+    # result_json = ow.get_current_weather(event.message.latitude, event.message.longitude)
+    # print(result_json)
+    forecast = ow.get_current_forecast(event.message.latitude, event.message.longitude)
+    forecast_sliced = mb.slice_per_day(forecast)
+
+    for day in forecast_sliced.values():
+        line_bot_api.push_message(
+            event.source.user_id,
+            mb.CarouselSendMessage(day)
+        )
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8000)
