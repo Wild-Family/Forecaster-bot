@@ -1,6 +1,7 @@
 import json
 import datetime
 import linebot.models.template as template
+import copy
 from collections import defaultdict
 
 
@@ -19,27 +20,38 @@ def build_test_message(weather_dict):
 
 def CarouselSendMessage(forecast_day):
     columns = []
-    for lapse in forecast_day.values():
-        columns.append(template.CarouselColumn(
-            thumbnail_image_url=None,
-            title=datetime.datetime.strptime(lapse['dt_txt'], '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d %H:%M'),
-            text=lapse['weather'][0]['main'],
-            actions=[
-                template.MessageTemplateAction(
-                    label='label',
-                    text='hey'
-                )
-            ]
-        ))
+    for i, lapse in enumerate(forecast_day.values()):
+        # 多すぎたので偶数個だけ表示
+        if i % 2 == 0:
+            image_url = f"https://openweathermap.org/img/w/{lapse['weather'][0]['icon']}.png"
+            columns.append(template.CarouselColumn(
+                thumbnail_image_url=image_url,
+                title=datetime.datetime.strptime(lapse['dt_txt'], '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d %H:%M'),
+                text=build_forecast_text(lapse),
+                actions=[
+                    template.MessageTemplateAction(
+                        label='More Info',
+                        text='i dont know sry :)'
+                    )
+                ]
+            ))
     
     message = template.TemplateSendMessage(
-        alt_text='Carousel Forecast Data',
+        alt_text='天気教えたるで',
         template=template.CarouselTemplate(
             columns=columns
         )
     )
 
     return message
+
+
+def build_forecast_text(forecast_lapse):
+    text = f"気温：{forecast_lapse['main']['temp']}℃\n"\
+            f"湿度：{forecast_lapse['main']['humidity']}％\n"\
+            f"風速：{forecast_lapse['wind']['speed']}m/s\n"
+    
+    return text
 
 
 def slice_per_day(forecast_dict):
@@ -55,8 +67,7 @@ def slice_per_day(forecast_dict):
         for i, item in enumerate(forecast_dict['list']):
             dt_converted = convert_str_to_dt_jp(item['dt_txt'])
             if dt_converted.day == day:
-                # print(item)
-                day_dict[i] = item
+                day_dict[i] = copy.deepcopy(item)
                 day_dict[i]['dt_txt'] = dt_converted.strftime('%Y-%m-%d %H:%M:%S')
         # print(day_dict)
         result_dict[day_count] = day_dict

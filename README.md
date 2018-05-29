@@ -10,3 +10,6 @@
 1. ngrokなりでSSL化し，チャネルページのWebHookURLに登録する
     - URLの末尾に/callbackが必要！
     - Toolboxだとngrokを使えないので注意
+
+#### Credit
+- Weather Icons made by Freepik from www.flaticon.com

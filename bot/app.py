@@ -73,10 +73,16 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text)
-    )
+    if event.message.text == "シドニーの天気をおしえて":
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="i dont know sry :)")
+        )
+    else:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=event.message.text)
+        )
 
 
 @handler.add(MessageEvent, message=LocationMessage)
@@ -86,11 +92,13 @@ def message_location(event):
     forecast = ow.get_current_forecast(event.message.latitude, event.message.longitude)
     forecast_sliced = mb.slice_per_day(forecast)
 
-    for day in forecast_sliced.values():
-        line_bot_api.push_message(
-            event.source.user_id,
-            mb.CarouselSendMessage(day)
-        )
+    for i, day in enumerate(forecast_sliced.values()):
+        # 3日分表示
+        if i < 3:
+            line_bot_api.push_message(
+                event.source.user_id,
+                mb.CarouselSendMessage(day)
+            )
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8000)
