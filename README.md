@@ -4,6 +4,7 @@
     ```.env
     CHANNEL_SECRET="YOUR_CHANNEL_SECRET"
     CHANNEL_TOKEN="YOUR_CHANNEL_TOKEN"
+    API_KEY="YOUR_OPENWEATHERMAP_API_KEY"
     ```
 1. `docker-compse up -d`でコンテナを起動
     - デフォルトではホストのポート8011を使います
@@ -13,3 +14,4 @@
 
 #### Credit
 - Weather Icons made by Freepik from www.flaticon.com
+- Weather API provided by OpenWeatherMap(https://openweathermap.org)
